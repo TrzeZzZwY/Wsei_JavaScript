@@ -1,0 +1,37 @@
+body{
+    background-color: #efb59e;
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.item{
+    padding: 3px 6px;
+    border: 2px black solid;
+    border-radius: 8px;
+    background-color: #874c62;
+}
+
+.item button{
+    background-color: rgba(51, 85, 85, 0.681);
+    border-radius: 20px;
+    margin: 5px;
+    width: 30px;
+    height: 30px;
+    font-weight: 900;
+}
+
+.item input{
+    border-radius: 3px;
+}
+
+#results{
+    font-size: 20px;
+    padding: 20px;
+    font-weight: 500;
+}
