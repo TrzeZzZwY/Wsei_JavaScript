@@ -15,19 +15,26 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 10px
+}
+#sliderWindow{
+    width: 650px;
+    height: 400px;
+    overflow: hidden;
 }
 .slider{
-    overflow: hidden;
+    transition: all 0.5s ease-in-out;
     width: 650px;
     height: 400px;
     display: flex;
 }
+
+#controlPanel button{
+    width: 20px;
+    height: 20px;
+    border: 2px black solid;
+    border-radius: 30px;
+}
 .slide{
-}
-.test{
-    animation: toRight 1s ease-in-out 0.1s forwards;
-}
-@keyframes toRight{
-    to {transform: translateX(-650px)}
+    width: 650px;
 }
