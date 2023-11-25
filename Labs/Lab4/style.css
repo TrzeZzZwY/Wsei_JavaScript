@@ -1,0 +1,38 @@
+
+
+body{
+    background-color: #2c3531;
+}
+
+textarea {
+    resize: none;
+}
+
+#formContainer{
+    border: black 5px solid;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+    width: 470px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: #d1e8e2;
+    position: absolute;
+}
+
+.orangeColor{
+    background-color: #f78d0c;
+}
+
+.greenColor{
+    background-color: #10893e;
+}
+
+.blueColor{
+    background-color: #77a6f7;
+}
+
+.redColor{
+    background-color: #c96567;
+}
