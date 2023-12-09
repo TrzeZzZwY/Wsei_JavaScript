@@ -1,10 +1,8 @@
-let funcs = new Array();
+/*let funcs = new Array();
 
 Attach(Foo);
 Attach(discoverPowerBallNumber);
 
-
-interval(funcs);
 
 function Attach(func){
     funcs.push(func);
@@ -13,17 +11,36 @@ function Attach(func){
 function Detach(func){
     funcs.pop(func);
 }
+*/
+class Observer{
+    constructor(subscribers){
+        this.subscriers = subscribers ?? new Array();
+    }
 
+    Attach(subscriber){
+        this.subscriers.push(subscriber);
+    }
 
+    Detach(subscriber){
+        this.subscriers.pop(subscriber);
+    }
 
-function interval(funcs) {
+    Update(data){
+        this.subscriers.forEach(sub =>
+            sub(data));
+    }
+}
+
+let myObserver = new Observer([Foo, discoverPowerBallNumber]);
+
+interval(myObserver);
+
+function interval(observer) {
   let timer = 1
   setInterval(
     () => {
-        funcs.forEach(func => {
-            func(timer);
-        });
-      timer++
+        observer.Update(timer);
+        timer++;
     }
     , 1000)
 }
