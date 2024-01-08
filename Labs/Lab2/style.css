@@ -1,0 +1,40 @@
+html, body{
+    width: 100%;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#container{
+    width: 100%;
+    height: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px
+}
+#sliderWindow{
+    width: 650px;
+    height: 400px;
+    overflow: hidden;
+}
+.slider{
+    transition: all 0.5s ease-in-out;
+    width: 650px;
+    height: 400px;
+    display: flex;
+}
+
+#controlPanel button{
+    width: 20px;
+    height: 20px;
+    border: 2px black solid;
+    border-radius: 30px;
+}
+.slide{
+    width: 650px;
+}
