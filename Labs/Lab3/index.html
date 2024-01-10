@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+<body>
+    <audio src="./sounds/crash1.wav" id="s1"></audio>
+    <audio src="./sounds/crash2.wav" id="s2"></audio>
+    <audio src="./sounds/kick.wav" id="s3"></audio>
+    <audio src="./sounds/perc1.wav" id="s4"></audio>
+    <audio src="./sounds/perc2.wav" id="s5"></audio>
+    <audio src="./sounds/snare1.wav" id="s6"></audio>
+    <audio src="./sounds/snare2.wav" id="s7"></audio>
+    <audio src="./sounds/tom.wav" id="s8"></audio>
+
+    <div id="container">
+        <div>
+            <form>
+                <input type="radio" id="off" name="metronome" value="off" onclick="setMetronome(0)" checked>
+                <label for="off">Off</label><br>
+                <input type="radio" id="half_sec" name="metronome" value="0.5" onclick="setMetronome(500)">
+                <label for="half_sec">0.5 sec</label><br>
+                <input type="radio" id="one_sec" name="metronome" value="1" onclick="setMetronome(1000)">
+                <label for="one_sec">1 sec</label><br>
+                <input type="radio" id="two_sec" name="metronome" value="2" onclick="setMetronome(2000)">
+                <label for="two_sec">2 sec</label><br>
+            </form>
+        </div>
+        <button class="btn" id="addBtn">Add Track</button>
+        <button class="btn btn-play" id="playAllBtn">Play All</button>
+        <button class="btn btn-play" id="playSelectedBtn">Play seleced</button>
+        <button class="btn btn-play" id="playAllLoopBtn">Play All loop</button>
+        <button class="btn btn-play" id="playSelectedLoopBtn">Play seleced loop</button>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
