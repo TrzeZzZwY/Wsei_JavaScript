@@ -1,82 +1,21 @@
 const addNoteBtn = document.querySelector("#addNoteBtn");
+const notesDivContainer = document.querySelector("#notes");
 
-let notes = new Array();
-let pinNotes = new Array();
-//lokal storage vs session storage 
 addNoteBtn.addEventListener("click",AddNewNoteForm);
 
-notes.addEventListener("onChange", AddNewNoteForm);
+if(localStorage.getItem("notes") == null){
+    localStorage.setItem("notes", JSON.stringify(new Array()));
+}
 
-/*
-<div>
-    <fieldset>
-        <legend>Select a note color:</legend>
+refreshPage();
 
-        <div>
-            <input type="radio" id="orangeColor" name="colorPicker" value="orangeColor" checked />
-            <label for="orangeColor">Orange</label>
-        </div>
-
-        <div>
-            <input type="radio" id="blueColor" name="colorPicker" value="blueColor" />
-            <label for="blueColor">Blue</label>
-        </div>
-
-        <div>
-            <input type="radio" id="greenColor" name="colorPicker" value="greenColor" />
-            <label for="greenColor">Green</label>
-        </div>
-
-        <div>
-            <input type="radio" id="redColor" name="colorPicker" value="redColor" />
-            <label for="redColor">Red</label>
-        </div>
-    </fieldset>
-
-    <div>
-        <label for="noteTitle">Title</label>
-        <input type="text" id="noteTitle" />
-    </div>
-    <fieldset>
-        <legend>Select a note type:</legend>
-
-        <div>
-            <input type="radio" id="textNoteOption" name="typePicker" value="textNoteOption" checked />
-            <label for="textNoteOption">Text</label>
-        </div>
-
-        <div>
-            <input type="radio" id="listNoteoption" name="typePicker" value="listNoteoption" />
-            <label for="listNoteoption">CheckList</label>
-        </div>
-    </fieldset>
-
-    if(text)
-    <div>
-        <label for="noteText">Red</label>
-        <textarea id="noteText" name="noteText" rows="6" cols="60">
-        </textarea>
-
-        <button> submit </button>
-    </div>
-    else
-    <div>
-        <button> AddNote </button>
-
-        <div>
-            <label for="checkOptionName">Red</label>
-            <input type="text" id="checkOptionName" />
-        </div>
-
-        <button> submit </button>
-    </div>
-</div>
-*/
 function AddNewNoteForm(){
+    // on/off
     if(document.querySelector("#formContainer")) {
         document.querySelector("#formContainer").remove();
         return;
     };
+
     const formContainder = document.createElement("form");
     formContainder.classList.add("container");
     formContainder.setAttribute("id","formContainer");
@@ -115,16 +54,17 @@ function AddNewNoteForm(){
     titleDiv.appendChild(titleInput);
     
     formContainder.appendChild(titleDiv);
+
     //type picker
     const typeFieldset = document.createElement("fieldset");
     const typeLegend = document.createElement("legend");
     typeLegend.innerText = "Select type";
     const textOption = CreateRadioElement("textOpton", "text", "typePicker", true);
-    const listOption = CreateRadioElement("listOption", "list", "typePicker", false);
+    //const listOption = CreateRadioElement("listOption", "list", "typePicker", false); TODO
     
     typeFieldset.appendChild(typeLegend);
     typeFieldset.appendChild(textOption);
-    typeFieldset.appendChild(listOption);
+    //typeFieldset.appendChild(listOption);
     
     formContainder.appendChild(typeFieldset);
 
@@ -193,41 +133,110 @@ function CreateTextTypeFormElement(){
 
 function formSubmited(e){
     e.preventDefault();
+    const id = Date.now();
     const color = document.querySelector('input[name="colorPicker"]:checked').value;
     const title = document.querySelector("#noteTitle").value;
     const text = document.querySelector("#noteText").value;
     const dateRaw = new Date()
-    const date = `${dateRaw.getFullYear()} ${dateRaw.getMonth() + 1} ${dateRaw.getDay()}`
+    const date = `${dateRaw.getFullYear()} ${dateRaw.getMonth() + 1} ${dateRaw.getDate()}`
+
+    console.log(id);
     console.log(color);
     console.log(title);
     console.log(text);
     console.log(date);
 
-    createTextNote(color,title,text,date);
+    createTextNote(id,color,title,text,date);
 }
 
-function createTextNote(color, title, text, date){
-    saveNote(color,title,text,date,"text");
-    const htmlNote = createHtmlTextNote(color,title,text,date);
-    notes.push(htmlNote);
+function createTextNote(id, color, title, text, date){
+    saveNote(id,color,title,text,date,"text",false);
 }
 
-function saveNote(color, title, text, date, type){
-    
+function saveNote(id, color, title, text, date, type, isPinned){
+    var notes = JSON.parse(localStorage.getItem("notes"));
+    notes.push({
+        id: id,
+        color: color,
+        title: title,
+        text: text,
+        date: date,
+        type: type,
+        isPinned: isPinned
+    });
+    localStorage.setItem("notes",JSON.stringify(notes));
+    refreshPage();
 }
 
-function createHtmlTextNote(color, title, text, date){
+function createHtmlTextNote(id,color, title, text, date, isPinned){
     const container = document.createElement("div");
-    container.classList.add(color)
+    container.classList.add(color, "noteContainer");
 
     const notetitle = document.createElement("span");
-    notetitle.innerText = title;
+    notetitle.innerText ="Title: " + title;
+    if(isPinned){
+        notetitle.innerText += " (pinned)";  
+    }
+    notetitle.classList.add("noteTitle")
 
     const noteText = document.createElement("span");
     noteText.innerText = text;
+    noteText.classList.add("noteText")
 
     const noteDate = document.createElement("span");
-    noteDate.innerText = date;
+    noteDate.innerText = "Date: " + date;
+    noteDate.classList.add("noteDate")
 
+    const pinBtn = document.createElement("button");
+    pinBtn.innerText = "Pin";
+    pinBtn.addEventListener("click", e => PinUnPin(id));
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerText = "delete";
+    deleteBtn.addEventListener("click", e => deleteNote(id));
+
+    container.appendChild(noteDate);
+    container.appendChild(notetitle);
+    container.appendChild(noteText);
+    container.appendChild(pinBtn);
+    container.appendChild(deleteBtn);
     return container;
+}
+
+function deleteNote(id){
+    let notes = JSON.parse(localStorage.getItem("notes"));
+    notes = notes.filter(e => e.id != id);
+    localStorage.setItem("notes",JSON.stringify(notes));
+    refreshPage();
+}
+
+function PinUnPin(id){
+    let notes = JSON.parse(localStorage.getItem("notes"));
+    notes = notes.map(e => {
+        if(e.id == id){
+            e.isPinned = !e.isPinned;
+        }
+        return e;
+    });
+    localStorage.setItem("notes",JSON.stringify(notes));
+    refreshPage();
+}
+
+function refreshPage(){
+    notesDivContainer.innerHTML = ''; // clear all notes;
+    let notes = JSON.parse(localStorage.getItem("notes"));
+    notes.forEach(e =>{
+        if(e.isPinned == true){
+            notesDivContainer.appendChild(
+                createHtmlTextNote(e.id,e.color,e.title,e.text,e.date, e.isPinned)
+                );
+        }
+    })
+    notes.forEach(e =>{
+        if(e.isPinned == false){
+            notesDivContainer.appendChild(
+                createHtmlTextNote(e.id, e.color,e.title,e.text,e.date, e.isPinned)
+                );
+        }
+    })
 }

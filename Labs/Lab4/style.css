@@ -20,7 +20,13 @@ textarea {
     background-color: #d1e8e2;
     position: absolute;
 }
-
+#notes{
+    margin: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+}
 .orangeColor{
     background-color: #f78d0c;
 }
@@ -35,4 +41,40 @@ textarea {
 
 .redColor{
     background-color: #c96567;
+}
+
+.noteContainer{
+    border: black solid 5px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 7px;
+    max-width: 300px;
+    min-width: 250px;
+    margin: 5px;
+}
+
+.noteDate{
+    font-weight: bold;
+    font-family: 'Courier New';
+    padding: 0 8px;
+}
+
+.noteTitle{
+    font-weight: bolder;
+    font-size: larger;
+    padding: 0 8px;
+}
+
+.noteText{
+    font-size: larger;
+    padding: 0 8px;
+}
+
+button{
+    border: black solid 2px;
+    border-radius: 10px;
+    padding: 8px 20px;
+    max-width: max-content;
 }
