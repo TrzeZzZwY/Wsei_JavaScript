@@ -7,8 +7,6 @@ if(localStorage.getItem("notes") == null){
     localStorage.setItem("notes", JSON.stringify(new Array()));
 }
 
-refreshPage();
-
 function AddNewNoteForm(){
     // on/off
     if(document.querySelector("#formContainer")) {
@@ -56,15 +54,29 @@ function formSubmited(e){
     //Check if request is in cache 
 
     // if not request data for city
-    const weather = getWeatherFor(city);
-
-    console.log(weather);
-    createTextNote(id,city,weather);
+    getWeatherFor(city).then(
+        (weather) =>{
+            trySaveNote(id,city,weather,false);
+        } 
+    );
 }
 
-function createTextNote(id, city, weather){
-    saveNote(id,city,weather,false);
+function trySaveNote(id, city, weather, isPinned){
+    var notes = JSON.parse(localStorage.getItem("notes"));
+
+    if(notes.length >= 10 || notes.some(e => e.city == city)) return; 
+
+    notes.push({
+        id: id,
+        city: city,
+        weather: weather,
+        isPinned: isPinned
+    });
+    localStorage.setItem("notes",JSON.stringify(notes));
+    console.log(JSON.stringify(notes));
+    refreshPage();
 }
+
 
 function saveNote(id, city, weather, isPinned){
     var notes = JSON.parse(localStorage.getItem("notes"));
@@ -75,18 +87,43 @@ function saveNote(id, city, weather, isPinned){
         isPinned: isPinned
     });
     localStorage.setItem("notes",JSON.stringify(notes));
+    console.log(JSON.stringify(notes));
     refreshPage();
 }
 
 function createHtmlTextNote(id,city, weather, isPinned){
+    console.dir(weather);
     const container = document.createElement("div");
-
     const notetitle = document.createElement("span");
     notetitle.innerText ="City: " + city;
     if(isPinned){
         notetitle.innerText += " (pinned)";  
     }
     notetitle.classList.add("noteTitle")
+
+    const weatherContainer = document.createElement("div");
+
+    const temp = document.createElement("div");
+    temp.innerText = `Temp: ${weather.main.temp} C`;
+    temp.classList.add("noteTitle")
+
+    const humidity = document.createElement("div");
+    humidity.innerText = `Humidity: ${weather.main.humidity}`;
+    humidity.classList.add("noteTitle")
+
+    const image = document.createElement("img");
+    getWeatherImage(weather.weather[0].icon).then(
+        (imageBlob) =>{
+            const imageObjectURL = URL.createObjectURL(imageBlob);
+            image.src = imageObjectURL;
+        }
+    )
+    
+    image.classList.add("noteTitle")
+
+    weatherContainer.appendChild(temp);
+    weatherContainer.appendChild(humidity);
+    weatherContainer.appendChild(image);
 
     const pinBtn = document.createElement("button");
     pinBtn.innerText = "Pin";
@@ -97,6 +134,7 @@ function createHtmlTextNote(id,city, weather, isPinned){
     deleteBtn.addEventListener("click", e => deleteNote(id));
 
     container.appendChild(notetitle);
+    container.appendChild(weatherContainer);
     container.appendChild(pinBtn);
     container.appendChild(deleteBtn);
     return container;
@@ -140,21 +178,21 @@ function refreshPage(){
     })
 }
 
-function getWeatherFor(city){
-    fetch(`https://samples.openweathermap.org/data/2.5/weather?q=London&appid=a3de4ae2a7e7e0bbb5218dc4ae38cfce`)
-  .then(response => {
+const getWeatherFor = async (city) =>{
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a3de4ae2a7e7e0bbb5218dc4ae38cfce&units=metric`);
     if (response.ok) {
-      return response.json(); // Parse the response data as JSON
-    } else {
+        return response.json();
+      }
       throw new Error('API request failed');
-    }
-  })
-  .then(data => {
-    // Process the response data here
-    console.log(data); // Example: Logging the data to the console
-  })
-  .catch(error => {
-    // Handle any errors here
-    console.error(error); // Example: Logging the error to the console
-  });
-}
+    };
+
+const getWeatherImage = async (code) =>{
+    console.log(code);
+    const response = await fetch(`https://openweathermap.org/img/wn/${code}@2x.png`);
+    if (response.ok) {
+        return response.blob();
+      }
+      throw new Error('API request failed');
+    };
+
+refreshPage();
